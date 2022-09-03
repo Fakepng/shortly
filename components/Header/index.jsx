@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 
 import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
 import Container from "react-bootstrap/Container";
 
 function Header() {
@@ -20,14 +19,12 @@ function Header() {
 						/>
 					</>
 				</Navbar.Brand>
-				<Nav className='me-auto'>
-					<Nav.Link as={Link} href='/'>
-						Home
-					</Nav.Link>
-					<Nav.Link as={Link} href='/login'>
-						Login
-					</Nav.Link>
-				</Nav>
+				<Navbar.Toggle />
+				<Navbar.Collapse className='justify-content-end'>
+					<Navbar.Text className='text-cyan-100'>
+						Signed in as: Mark Otto
+					</Navbar.Text>
+				</Navbar.Collapse>
 			</Container>
 		</Navbar>
 	);
