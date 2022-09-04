@@ -28,4 +28,5 @@ export default NextAuth({
           clientSecret: process.env.NEXT_PUBLIC_DISCORD_CLIENT_SECRET,
         }),
     ],
+    secret: process.env.NEXT_PUBLIC_SECRET,
 })
