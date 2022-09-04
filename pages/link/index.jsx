@@ -1,4 +1,5 @@
 import { getSession } from "next-auth/react";
+import { useRouter } from "next/router";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import Container from "react-bootstrap/Container";
@@ -6,6 +7,21 @@ import Icon from "@mdi/react";
 import { mdiPlusCircle } from "@mdi/js";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
+import Accordion from "react-bootstrap/Accordion";
+import Form from "react-bootstrap/Form";
+import {
+	FacebookShareButton,
+	FacebookIcon,
+	LineShareButton,
+	LineIcon,
+	RedditShareButton,
+	RedditIcon,
+	TwitterShareButton,
+	TwitterIcon,
+	FacebookMessengerShareButton,
+	FacebookMessengerIcon,
+} from "next-share";
+import QRCode from "qrcode";
 
 import Header from "../../components/Header";
 
@@ -13,23 +29,120 @@ function Link({ session }) {
 	const [userId, setUserId] = useState(undefined);
 	const [urls, setUrls] = useState([]);
 	const [show, setShow] = useState(false);
+	const [img, setImg] = useState(undefined);
 	const nameRef = useRef(null);
 	const urlRef = useRef("https://");
+	const router = useRouter();
 
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
 
+	const generateQR = async (text) => {
+		try {
+			setImg(await QRCode.toDataURL(text));
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
+	const deleteUrl = async (code) => {
+		await axios.post("/api/deleteUrl", { code });
+		setUrls(urls.filter((url) => url.code !== code));
+	};
+
 	const urlsMap = urls.map((url) => {
 		return (
-			<div
-				className='flex flex-col items-center justify-center text-gray-300'
-				key={url.code}
-			>
-				<h1>
-					{url.name} | {url.code.match(/.{1,4}/g).join("-")}
-				</h1>
-				<p>{url.url}</p>
-			</div>
+			<Accordion key={url.code}>
+				<Accordion.Item eventKey={url.code}>
+					<Accordion.Header>
+						{url.name} | {url.code.match(/.{1,4}/g).join("-")}
+					</Accordion.Header>
+					<Accordion.Body>
+						{url.url}
+						<br />
+						<Button
+							variant='primary'
+							type='submit'
+							size='sm'
+							className='bg-blue-300'
+							onClick={() => {
+								navigator.clipboard.writeText(
+									`https://shotly.fakepng.com/go/${url.code
+										.match(/.{1,4}/g)
+										.join("-")}`
+								);
+							}}
+						>
+							COPY
+						</Button>{" "}
+						<FacebookShareButton
+							url={`https://shotly.fakepng.com/go/${url.code
+								.match(/.{1,4}/g)
+								.join("-")}`}
+							quote={"Check out this Link!"}
+						>
+							<FacebookIcon size={32} round />
+						</FacebookShareButton>
+						<LineShareButton
+							url={`https://shotly.fakepng.com/go/${url.code
+								.match(/.{1,4}/g)
+								.join("-")}`}
+							title={"Check out this Link!"}
+						>
+							<LineIcon size={32} round />
+						</LineShareButton>
+						<RedditShareButton
+							url={`https://shotly.fakepng.com/go/${url.code
+								.match(/.{1,4}/g)
+								.join("-")}`}
+							title={"Check out this Link!"}
+						>
+							<RedditIcon size={32} round />
+						</RedditShareButton>
+						<TwitterShareButton
+							url={`https://shotly.fakepng.com/go/${url.code
+								.match(/.{1,4}/g)
+								.join("-")}`}
+							title={"Check out this Link!"}
+						>
+							<TwitterIcon size={32} round />
+						</TwitterShareButton>
+						<FacebookMessengerShareButton
+							url={`https://shotly.fakepng.com/go/${url.code
+								.match(/.{1,4}/g)
+								.join("-")}`}
+							appId={process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_ID}
+						>
+							<FacebookMessengerIcon size={32} round />
+						</FacebookMessengerShareButton>{" "}
+						<Button
+							variant='primary'
+							type='submit'
+							size='sm'
+							className='bg-blue-300'
+							onClick={() => {
+								generateQR(
+									`https://shotly.fakepng.com/go/${url.code
+										.match(/.{1,4}/g)
+										.join("-")}`
+								);
+							}}
+						>
+							QR
+						</Button>{" "}
+						<Button
+							variant='danger'
+							type='submit'
+							size='sm'
+							className='bg-red-300'
+							onClick={() => deleteUrl(url.code)}
+						>
+							DELETE
+						</Button>
+						{img && <img src={img} />}
+					</Accordion.Body>
+				</Accordion.Item>
+			</Accordion>
 		);
 	});
 
@@ -42,14 +155,13 @@ function Link({ session }) {
 
 		axios
 			.post("/api/newUrl", { name, url, id: userId })
-			.then((res) => {
-				handleClose();
-				router.reload();
-			})
+			.then((res) => {})
 			.catch((err) => console.log(err));
 
 		nameRef.current.value = "";
 		urlRef.current.value = "";
+		handleClose();
+		router.reload();
 	};
 
 	useEffect(() => {
@@ -60,7 +172,6 @@ function Link({ session }) {
 			} else {
 				setUserId(res.data.id);
 				setUrls(res.data.urls);
-				console.log(res.data.urls);
 			}
 		});
 	}, []);
@@ -83,22 +194,35 @@ function Link({ session }) {
 					<Modal.Title>New URL</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<form>
-						<label htmlFor='fname'>Name:</label>
-						<input
-							type='text'
-							id='fname'
-							name='fname'
-							placeholder='name'
-							ref={nameRef}
-						/>
-						<label htmlFor='lname'>Url:</label>
-						<input type='text' id='lname' name='lname' ref={urlRef} />
-						<input type='submit' value='Submit' onClick={submitUrl} />
-					</form>
+					<Form>
+						<Form.Group className='mb-3' controlId='formBasicName'>
+							<Form.Label>Name:</Form.Label>
+							<Form.Control type='text' placeholder='' ref={nameRef} />
+							<Form.Text className='text-muted'>
+								Name the link as you want to call.
+							</Form.Text>
+						</Form.Group>
+
+						<Form.Group className='mb-3' controlId='formBasicLink'>
+							<Form.Label>Url:</Form.Label>
+							<Form.Control type='text' placeholder='https://' ref={urlRef} />
+						</Form.Group>
+						<Button
+							variant='primary'
+							type='submit'
+							onClick={submitUrl}
+							className='bg-blue-300'
+						>
+							Submit
+						</Button>
+					</Form>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button variant='secondary' onClick={handleClose}>
+					<Button
+						variant='secondary'
+						onClick={handleClose}
+						className='bg-gray-300'
+					>
 						Close
 					</Button>
 				</Modal.Footer>
