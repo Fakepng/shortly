@@ -7,6 +7,7 @@ import Container from "react-bootstrap/Container";
 
 function Header() {
 	const { data: session } = useSession();
+	console.log(session);
 
 	return (
 		<Navbar className='bg-slate-800 sticky top-0 z-50 p-2 shadow-xl'>
