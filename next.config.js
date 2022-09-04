@@ -5,7 +5,8 @@ const nextConfig = {
   images: {
     domains: [
       'platform-lookaside.fbsbx.com',
-      'avatars.githubusercontent.com'
+      'avatars.githubusercontent.com',
+      'cdn.discordapp.com',
     ],
   },
 }
