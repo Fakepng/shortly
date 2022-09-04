@@ -4,7 +4,7 @@ import Main from '../components/Main';
 
 export default function Home() {
   return (
-    <div>
+    <div className='flex flex-col h-screen'>
       <Head>
         <title>URL Shorrtner</title>
         <meta name="description" content="URL Shorrtner" />
@@ -15,7 +15,7 @@ export default function Home() {
         <Header />
       </header>
 
-      <main>
+      <main className='flex flex-grow bg-slate-900'>
         <Main />
       </main>
     </div>

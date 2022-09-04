@@ -26,13 +26,13 @@ function main() {
 	};
 
 	return (
-		<Container className='h-screen'>
-			<div className='flex flex-col h-screen items-center justify-center'>
-				<h1 className='text-4xl'>URL Shortener</h1>
-				<p className='text-xl'>URL Shortener</p>
+		<Container className='flex flex-grow'>
+			<div className='flex flex-grow flex-col items-center justify-center'>
+				<h1 className='text-4xl text-gray-300'>URL Shortener</h1>
+				<p className='text-xl text-gray-300'>URL Shortener</p>
 				<form>
 					<input
-						className='hidden md:inline-flex flex ml-2 items-center bg-transparent outline-none placeholder-gray-500 flex-shrink text-center'
+						className='hidden md:inline-flex flex ml-2 items-center bg-transparent outline-none text-gray-300 placeholder-gray-400 flex-shrink text-center'
 						type='text'
 						ref={inputRef}
 						placeholder='ABCD-EFGH-IJKL'

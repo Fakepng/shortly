@@ -15,25 +15,29 @@ function go() {
 				setCountdown(countdown - 1);
 				axios.get(`/api/getUrl/${id}`).then((res) => {
 					if (res.data === "Url not found") {
-						router.replace("/");
+						console.warn(res.data);
 					} else {
 						setWeb(res.data);
 					}
 				});
 			} else {
-				window.location.assign(web);
-				console.log("redirecting");
+				if (!web) {
+					router.replace("/");
+				} else {
+					window.location.assign(web);
+					console.log("redirecting");
+				}
 			}
 		}, 1000);
 	}, [countdown]);
 
 	return (
-		<div className='flex flex-col h-screen m-auto justify-center  items-center'>
+		<div className='flex flex-col h-screen m-auto justify-center items-center bg-slate-900'>
 			<div className={style.ldsripple}>
 				<div></div>
 				<div></div>
 			</div>
-			<p>Redirecting in {countdown}</p>
+			<p className='text-gray-300 font-bold'>Redirecting in {countdown}</p>
 		</div>
 	);
 }

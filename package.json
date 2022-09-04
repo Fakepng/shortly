@@ -9,6 +9,8 @@
 		"lint": "next lint"
 	},
 	"dependencies": {
+		"@mdi/js": "^7.0.96",
+		"@mdi/react": "^1.6.1",
 		"@next-auth/prisma-adapter": "^1.0.4",
 		"@prisma/client": "^4.3.1",
 		"axios": "^0.27.2",

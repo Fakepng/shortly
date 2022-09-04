@@ -6,7 +6,7 @@ export default async function handle(req, res) {
 
     const code = id.split('-').join('')
 
-    const url = await prisma.url.findUnique({
+    const url = await prisma.url.findFirst({
         where: {
             code
         }
@@ -23,7 +23,8 @@ export default async function handle(req, res) {
                 visited: url.visited + 1
             }
         })
-        
-        res.end(url.url)
+
     }
+
+    res.end(url?.url)
 }
