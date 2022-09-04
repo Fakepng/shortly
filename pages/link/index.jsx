@@ -9,7 +9,7 @@ import Button from "react-bootstrap/Button";
 
 import Header from "../../components/Header";
 
-function link({ session }) {
+function Link({ session }) {
 	const [userId, setUserId] = useState(undefined);
 	const [urls, setUrls] = useState([]);
 	const [show, setShow] = useState(false);
@@ -21,7 +21,10 @@ function link({ session }) {
 
 	const urlsMap = urls.map((url) => {
 		return (
-			<div className='flex flex-col items-center justify-center text-gray-300'>
+			<div
+				className='flex flex-col items-center justify-center text-gray-300'
+				key={url.code}
+			>
 				<h1>
 					{url.name} | {url.code.match(/.{1,4}/g).join("-")}
 				</h1>
@@ -81,7 +84,7 @@ function link({ session }) {
 				</Modal.Header>
 				<Modal.Body>
 					<form>
-						<label for='fname'>Name:</label>
+						<label htmlfor='fname'>Name:</label>
 						<input
 							type='text'
 							id='fname'
@@ -89,7 +92,7 @@ function link({ session }) {
 							placeholder='name'
 							ref={nameRef}
 						/>
-						<label for='lname'>Url:</label>
+						<label htmlfor='lname'>Url:</label>
 						<input type='text' id='lname' name='lname' ref={urlRef} />
 						<input type='submit' value='Submit' onClick={submitUrl} />
 					</form>
@@ -121,4 +124,4 @@ export async function getServerSideProps(context) {
 	};
 }
 
-export default link;
+export default Link;

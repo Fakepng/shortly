@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import Container from "react-bootstrap/Container";
 
-function main() {
+function Main() {
 	const inputRef = useRef(null);
 	const router = useRouter();
 
@@ -46,4 +46,4 @@ function main() {
 	);
 }
 
-export default main;
+export default Main;

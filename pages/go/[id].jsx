@@ -3,7 +3,7 @@ import axios from "axios";
 import style from "../../styles/go.module.css";
 import { useEffect, useState } from "react";
 
-function go() {
+function Go() {
 	const router = useRouter();
 	const { id } = router.query;
 	const [countdown, setCountdown] = useState(3);
@@ -41,4 +41,4 @@ function go() {
 		</div>
 	);
 }
-export default go;
+export default Go;
