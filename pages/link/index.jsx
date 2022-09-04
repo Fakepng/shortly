@@ -84,7 +84,7 @@ function Link({ session }) {
 				</Modal.Header>
 				<Modal.Body>
 					<form>
-						<label htmlfor='fname'>Name:</label>
+						<label htmlFor='fname'>Name:</label>
 						<input
 							type='text'
 							id='fname'
@@ -92,7 +92,7 @@ function Link({ session }) {
 							placeholder='name'
 							ref={nameRef}
 						/>
-						<label htmlfor='lname'>Url:</label>
+						<label htmlFor='lname'>Url:</label>
 						<input type='text' id='lname' name='lname' ref={urlRef} />
 						<input type='submit' value='Submit' onClick={submitUrl} />
 					</form>
