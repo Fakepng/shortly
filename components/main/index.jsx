@@ -35,7 +35,7 @@ function Main() {
 						className='hidden md:inline-flex flex ml-2 items-center bg-transparent outline-none text-gray-300 placeholder-gray-400 flex-shrink text-center'
 						type='text'
 						ref={inputRef}
-						placeholder='ABCD-EFGH-IJKL'
+						placeholder='abcd-efgh-ijkl'
 					/>
 					<button hidden type='submit' onClick={getId}>
 						Submit
