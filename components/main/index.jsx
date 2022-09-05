@@ -32,7 +32,7 @@ function Main() {
 				<p className='text-xl text-gray-300'>URL Shortener</p>
 				<form>
 					<input
-						className='hidden md:inline-flex flex ml-2 items-center bg-transparent outline-none text-gray-300 placeholder-gray-400 flex-shrink text-center'
+						className='flex ml-2 items-center bg-transparent outline-none text-gray-300 placeholder-gray-400 flex-shrink text-center'
 						type='text'
 						ref={inputRef}
 						placeholder='abcd-efgh-ijkl'
