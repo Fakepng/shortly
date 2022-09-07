@@ -5,15 +5,14 @@ export default async function handle(req, res) {
 
     const code = id.split('-').join('')
 
-    const url = await db.url.findFirst({
+    await db.url.update({
         where: {
             code
+        },
+        data: {
+            visited: {
+                increment: 1
+            }
         }
     })
-    
-    if (!url) {
-        res.end('Url not found')
-    } else {
-        res.end(url?.url)
-    }
 }

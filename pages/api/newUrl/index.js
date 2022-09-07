@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import { db } from '../../../utils/db.server'
 
 export default async function handle(req, res) {
     const { id, url, name } = req.body;
@@ -13,7 +12,7 @@ export default async function handle(req, res) {
             code += string.charAt(Math.floor(Math.random() * string.length));
         }
 
-        const codeExist = await prisma.url.findUnique({
+        const codeExist = await db.url.findUnique({
             where: {
                 code
             }
@@ -25,7 +24,7 @@ export default async function handle(req, res) {
     }
     
 
-    const newUrl = await prisma.user.update({
+    const newUrl = await db.user.update({
         where: {
             id
         },

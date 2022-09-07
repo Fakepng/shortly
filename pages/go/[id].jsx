@@ -28,6 +28,7 @@ function Go() {
 				if (!web) {
 					router.replace("/");
 				} else {
+					axios.get(`/api/addVisited/${id}`);
 					window.location.assign(web);
 					console.log("redirecting");
 				}

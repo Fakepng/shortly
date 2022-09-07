@@ -1,10 +1,9 @@
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import { db } from '../../../utils/db.server'
 
 export default async function handle(req, res) {
     const { code } = req.body;
 
-    await prisma.url.delete({
+    await db.url.delete({
         where: {
             code
         }

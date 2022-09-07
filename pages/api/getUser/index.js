@@ -1,10 +1,9 @@
-import { PrismaClient } from '@prisma/client'
-const prisma = new PrismaClient()
+import { db } from '../../../utils/db.server'
 
 export default async function handle(req, res) {
     const { email } = req.body;
 
-    const user = await prisma.user.findUnique({
+    const user = await db.user.findUnique({
         where: {
             email
         }
@@ -14,7 +13,7 @@ export default async function handle(req, res) {
         res.end({ message: 'User not found' })
     }
 
-    const url = await prisma.url.findMany({
+    const url = await db.url.findMany({
         where: {
             userId: user.id
         }

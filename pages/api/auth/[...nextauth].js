@@ -4,12 +4,10 @@ import GoogleProvider from "next-auth/providers/google";
 import FacebookProvider from "next-auth/providers/facebook";
 import DiscordProvider from "next-auth/providers/discord";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient()
+import { db } from '../../../utils/db.server'
 
 export default NextAuth({
-    adapter: PrismaAdapter(prisma),
+    adapter: PrismaAdapter(db),
     providers: [
         // GithubProvider({
         //     clientId: process.env.NEXT_PUBLIC_GITHUB_ID,
