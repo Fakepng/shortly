@@ -28,7 +28,7 @@ function Main() {
 	return (
 		<Container className='flex flex-grow'>
 			<div className='flex flex-grow flex-col items-center justify-center'>
-				<h1 className='text-4xl text-gray-300'>URL Shortener</h1>
+				<h1 className='text-4xl text-gray-300'>SHOTLY</h1>
 				<p className='text-xl text-gray-300'>URL Shortener</p>
 				<form>
 					<input

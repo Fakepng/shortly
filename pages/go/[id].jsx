@@ -11,7 +11,7 @@ function Go() {
 
 	useEffect(() => {
 		setInterval(() => {
-			if (countdown > 0) {
+			if (countdown > 0 && web) {
 				setCountdown(countdown - 1);
 				axios.get(`/api/getUrl/${id}`).then((res) => {
 					if (res.data === "Url not found") {
