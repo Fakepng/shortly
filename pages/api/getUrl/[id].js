@@ -20,7 +20,9 @@ export default async function handle(req, res) {
                 code
             },
             data: {
-                visited: url.visited + 1
+                visited: {
+                    increment: 1
+                }
             }
         })
 
