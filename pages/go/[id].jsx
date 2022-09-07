@@ -10,16 +10,20 @@ function Go() {
 	const [web, setWeb] = useState(undefined);
 
 	useEffect(() => {
+		const getWeb = () => {
+			if (web) return;
+			axios.get(`/api/getUrl/${id}`).then((res) => {
+				if (res.data === "Url not found") {
+					console.warn(res.data);
+				} else {
+					setWeb(res.data);
+				}
+			});
+		};
 		setInterval(() => {
-			if (countdown > 0 && web) {
+			if (countdown > 0) {
 				setCountdown(countdown - 1);
-				axios.get(`/api/getUrl/${id}`).then((res) => {
-					if (res.data === "Url not found") {
-						console.warn(res.data);
-					} else {
-						setWeb(res.data);
-					}
-				});
+				getWeb();
 			} else {
 				if (!web) {
 					router.replace("/");
