@@ -30,17 +30,19 @@ function Header() {
 								Link
 							</h1>
 						</Link>
-						<div className='justify-end grid grid-flow-col h-max'>
-							<Image
-								src={session.user.image}
-								width='30'
-								height='30'
-								layout='fixed'
-								className='aspect-square rounded-full align-middle'
-								alt={session.user.name}
-							/>
+						<div className='justify-end grid grid-cols-2'>
+							<div className='row-span-2'>
+								<Image
+									src={session.user.image}
+									width={60}
+									height={60}
+									layout='intrinsic'
+									className='aspect-square rounded-full'
+									alt={session.user.name}
+								/>
+							</div>
 							<Navbar.Text className='text-gray-300'>
-								Signed in as{" "}
+								<p>Signed in as</p>
 								<p
 									className='cursor-pointer text-gray-300 hover:text-gray-400'
 									onClick={() => signOut()}

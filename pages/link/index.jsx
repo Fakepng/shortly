@@ -1,6 +1,6 @@
 import { getSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useDeferredValue } from "react";
 import axios from "axios";
 import Container from "react-bootstrap/Container";
 import Icon from "@mdi/react";
@@ -28,11 +28,14 @@ import Header from "../../components/Header";
 function Link({ session }) {
 	const [userId, setUserId] = useState(undefined);
 	const [urls, setUrls] = useState([]);
+	const [filteredUrls, setFilteredUrls] = useState([]);
 	const [show, setShow] = useState(false);
 	const [img, setImg] = useState(undefined);
+	const [search, setSearch] = useState("");
 	const nameRef = useRef(null);
-	const urlRef = useRef("https://");
+	const urlRef = useRef("");
 	const router = useRouter();
+	// const deferredSearch = useDeferredValue(search);
 
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
@@ -50,95 +53,98 @@ function Link({ session }) {
 		setUrls(urls.filter((url) => url.code !== code));
 	};
 
-	const urlsMap = urls.map((url) => {
+	const urlsMap = filteredUrls.map((url) => {
 		return (
 			<Accordion key={url.code}>
 				<Accordion.Item eventKey={url.code}>
 					<Accordion.Header>
-						{url.name} | {url.code.match(/.{1,4}/g).join("-")}
+						{url.name} | {url.code.match(/.{1,4}/g).join("-")} | Visited{" "}
+						{url.visited} times
 					</Accordion.Header>
 					<Accordion.Body>
 						{url.url}
 						<br />
-						<Button
-							variant='primary'
-							type='submit'
-							size='sm'
-							className='bg-blue-300'
-							onClick={() => {
-								navigator.clipboard.writeText(
-									`https://shotly.fakepng.com/go/${url.code
-										.match(/.{1,4}/g)
-										.join("-")}`
-								);
-							}}
-						>
-							COPY
-						</Button>{" "}
-						<FacebookShareButton
-							url={`https://shotly.fakepng.com/go/${url.code
-								.match(/.{1,4}/g)
-								.join("-")}`}
-							quote={"Check out this Link!"}
-						>
-							<FacebookIcon size={32} round />
-						</FacebookShareButton>
-						<LineShareButton
-							url={`https://shotly.fakepng.com/go/${url.code
-								.match(/.{1,4}/g)
-								.join("-")}`}
-							title={"Check out this Link!"}
-						>
-							<LineIcon size={32} round />
-						</LineShareButton>
-						<RedditShareButton
-							url={`https://shotly.fakepng.com/go/${url.code
-								.match(/.{1,4}/g)
-								.join("-")}`}
-							title={"Check out this Link!"}
-						>
-							<RedditIcon size={32} round />
-						</RedditShareButton>
-						<TwitterShareButton
-							url={`https://shotly.fakepng.com/go/${url.code
-								.match(/.{1,4}/g)
-								.join("-")}`}
-							title={"Check out this Link!"}
-						>
-							<TwitterIcon size={32} round />
-						</TwitterShareButton>
-						<FacebookMessengerShareButton
-							url={`https://shotly.fakepng.com/go/${url.code
-								.match(/.{1,4}/g)
-								.join("-")}`}
-							appId={process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_ID}
-						>
-							<FacebookMessengerIcon size={32} round />
-						</FacebookMessengerShareButton>{" "}
-						<Button
-							variant='primary'
-							type='submit'
-							size='sm'
-							className='bg-blue-300'
-							onClick={() => {
-								generateQR(
-									`https://shotly.fakepng.com/go/${url.code
-										.match(/.{1,4}/g)
-										.join("-")}`
-								);
-							}}
-						>
-							QR
-						</Button>{" "}
-						<Button
-							variant='danger'
-							type='submit'
-							size='sm'
-							className='bg-red-300'
-							onClick={() => deleteUrl(url.code)}
-						>
-							DELETE
-						</Button>
+						<div>
+							<Button
+								variant='primary'
+								type='submit'
+								size='sm'
+								className='bg-blue-300'
+								onClick={() => {
+									navigator.clipboard.writeText(
+										`https://shotly.fakepng.com/go/${url.code
+											.match(/.{1,4}/g)
+											.join("-")}`
+									);
+								}}
+							>
+								COPY
+							</Button>{" "}
+							<FacebookShareButton
+								url={`https://shotly.fakepng.com/go/${url.code
+									.match(/.{1,4}/g)
+									.join("-")}`}
+								quote={"Check out this Link!"}
+							>
+								<FacebookIcon size={32} round />
+							</FacebookShareButton>
+							<LineShareButton
+								url={`https://shotly.fakepng.com/go/${url.code
+									.match(/.{1,4}/g)
+									.join("-")}`}
+								title={"Check out this Link!"}
+							>
+								<LineIcon size={32} round />
+							</LineShareButton>
+							<RedditShareButton
+								url={`https://shotly.fakepng.com/go/${url.code
+									.match(/.{1,4}/g)
+									.join("-")}`}
+								title={"Check out this Link!"}
+							>
+								<RedditIcon size={32} round />
+							</RedditShareButton>
+							<TwitterShareButton
+								url={`https://shotly.fakepng.com/go/${url.code
+									.match(/.{1,4}/g)
+									.join("-")}`}
+								title={"Check out this Link!"}
+							>
+								<TwitterIcon size={32} round />
+							</TwitterShareButton>
+							<FacebookMessengerShareButton
+								url={`https://shotly.fakepng.com/go/${url.code
+									.match(/.{1,4}/g)
+									.join("-")}`}
+								appId={process.env.NEXT_PUBLIC_FACEBOOK_CLIENT_ID}
+							>
+								<FacebookMessengerIcon size={32} round />
+							</FacebookMessengerShareButton>{" "}
+							<Button
+								variant='primary'
+								type='submit'
+								size='sm'
+								className='bg-blue-300'
+								onClick={() => {
+									generateQR(
+										`https://shotly.fakepng.com/go/${url.code
+											.match(/.{1,4}/g)
+											.join("-")}`
+									);
+								}}
+							>
+								QR
+							</Button>{" "}
+							<Button
+								variant='danger'
+								type='submit'
+								size='sm'
+								className='bg-red-300'
+								onClick={() => deleteUrl(url.code)}
+							>
+								DELETE
+							</Button>
+						</div>
 						{img && <img src={img} />}
 					</Accordion.Body>
 				</Accordion.Item>
@@ -176,10 +182,37 @@ function Link({ session }) {
 		});
 	}, []);
 
+	useEffect(() => {
+		// if (search === "") {
+		setFilteredUrls(urls);
+		// } else {
+		// 	setFilteredUrls(
+		// 		urls.filter((url) => {
+		// 			!url.name.toLowerCase().includes(search.toLowerCase()) ||
+		// 				url.code.toLowerCase().includes(search.toLowerCase()) ||
+		// 				url.url.toLowerCase().includes(search.toLowerCase()) ||
+		// 				url.code
+		// 					.match(/.{1,4}/g)
+		// 					.join("-")
+		// 					.toLowerCase()
+		// 					.includes(search.toLowerCase());
+		// 		})
+		// 	);
+		// }
+	}, [urls, search]);
+
 	return (
 		<div className='flex flex-col h-screen'>
 			<Header />
 			<div className='flex flex-grow bg-slate-900'>
+				{/* <div className='absolute top-3 right-16 mt-20 cursor-pointer'>
+					<input
+						className='flex ml-2 items-center bg-transparent outline-none text-gray-300 placeholder-gray-400 flex-shrink text-right'
+						type='text'
+						onChange={(event) => setSearch(event.target.value)}
+						placeholder='Search'
+					/>
+				</div> */}
 				<Icon
 					path={mdiPlusCircle}
 					size={2}
