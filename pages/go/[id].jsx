@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import Head from "next/head";
 import axios from "axios";
 import style from "../../styles/go.module.css";
 import { useEffect, useState } from "react";
@@ -29,21 +30,26 @@ function Go() {
 					router.replace("/");
 				} else {
 					axios.get(`/api/addVisited/${id}`);
-					window.location.assign(web);
 					console.log("redirecting");
+					window.location.assign(web);
 				}
 			}
 		}, 1000);
 	}, [countdown]);
 
 	return (
-		<div className='flex flex-col h-screen m-auto justify-center items-center bg-slate-900'>
+		<main className='flex flex-col h-screen m-auto justify-center items-center bg-slate-900'>
+			<Head>
+				<title>Redirecting...</title>
+				<meta name='description' content='URL Shortener' />
+				<link rel='icon' href='/favicon.ico' />
+			</Head>
 			<div className={style.ldsripple}>
 				<div></div>
 				<div></div>
 			</div>
 			<p className='text-gray-300 font-bold'>Redirecting in {countdown}</p>
-		</div>
+		</main>
 	);
 }
 export default Go;
