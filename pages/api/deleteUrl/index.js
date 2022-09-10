@@ -9,5 +9,5 @@ export default async function handle(req, res) {
         }
     });
 
-    res.end('Url deleted')
+    res.send('Url deleted')
 }

@@ -12,14 +12,15 @@ function Go() {
 
 	useEffect(() => {
 		const getWeb = () => {
-			if (web) return;
-			axios.get(`/api/getUrl/${id}`).then((res) => {
-				if (res.data === "Url not found") {
-					console.warn(res.data);
-				} else {
-					setWeb(res.data);
-				}
-			});
+			if (!web) {
+				axios.get(`/api/getUrl/${id}`).then((res) => {
+					if (res.data === "Url not found") {
+						console.warn(res.data);
+					} else {
+						setWeb(res.data);
+					}
+				});
+			}
 		};
 		setInterval(() => {
 			if (countdown > 0) {

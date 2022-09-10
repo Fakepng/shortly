@@ -10,6 +10,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Accordion from "react-bootstrap/Accordion";
 import Form from "react-bootstrap/Form";
+import Alert from "react-bootstrap/Alert";
 import {
 	FacebookShareButton,
 	FacebookIcon,
@@ -27,9 +28,9 @@ import QRCode from "qrcode";
 import Header from "../../components/Header";
 
 function Link({ session }) {
-	const [userId, setUserId] = useState(undefined);
 	const [urls, setUrls] = useState([]);
 	const [filteredUrls, setFilteredUrls] = useState([]);
+	const [limit, setLimit] = useState(false);
 	const [show, setShow] = useState(false);
 	const [img, setImg] = useState({});
 	const [search, setSearch] = useState("");
@@ -179,25 +180,26 @@ function Link({ session }) {
 		const url = urlRef.current.value;
 
 		axios
-			.post("/api/newUrl", { name, url, id: userId })
-			.then((res) => {})
+			.post("/api/newUrl", { name, url, id: session.user.id })
+			.then((res) => {
+				if (res.data === "You have reached the limit of 10 urls") {
+					setLimit(() => true);
+				}
+			})
 			.catch((err) => console.log(err));
 
 		nameRef.current.value = "";
 		urlRef.current.value = "";
 		handleClose();
-		router.reload();
+
+		if (!limit) {
+			router.reload();
+		}
 	};
 
 	useEffect(() => {
-		axios.post("/api/getUser", { email: session.user.email }).then((res) => {
-			if (res.data.message === "User not found") {
-				console.warn(res.data.message);
-				router.replace("/");
-			} else {
-				setUserId(res.data.id);
-				setUrls(res.data.urls);
-			}
+		axios.post("/api/getUser", { id: session.user.id }).then((res) => {
+			setUrls(res.data);
 		});
 	}, []);
 
@@ -233,8 +235,17 @@ function Link({ session }) {
 				<Header />
 			</header>
 
-			<main className='flex flex-grow bg-slate-900'>
-				<div className='absolute top-3 right-16 mt-20 cursor-pointer md: bottom-0'>
+			<main className='flex flex-col flex-grow bg-slate-900'>
+				{limit && (
+					<Container>
+						<Alert variant='danger'>
+							<Alert.Heading>
+								You have reached the limit of 10 urls
+							</Alert.Heading>
+						</Alert>
+					</Container>
+				)}
+				<div className='absolute top-4 right-16 mt-20 cursor-pointer md: bottom-0'>
 					<input
 						className='flex ml-2 items-center bg-transparent outline-none text-gray-300 placeholder-gray-400 flex-shrink text-right'
 						type='text'
@@ -246,7 +257,7 @@ function Link({ session }) {
 					path={mdiPlusCircle}
 					size={2}
 					color='white'
-					className='absolute top-0 right-0 mt-20 cursor-pointer md:bottom-0'
+					className='absolute top-1 right-0 mt-20 cursor-pointer md:bottom-0'
 					onClick={handleShow}
 				/>
 				<Container>{urlsMap}</Container>

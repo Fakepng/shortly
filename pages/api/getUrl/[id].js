@@ -12,8 +12,8 @@ export default async function handle(req, res) {
     })
     
     if (!url) {
-        res.end('Url not found')
+        res.send('Url not found')
     } else {
-        res.end(url?.url)
+        res.send(url?.url)
     }
 }

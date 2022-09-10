@@ -60,6 +60,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  role          String    @default("FREE")
   accounts      Account[]
   sessions      Session[]
   url           Url[]
