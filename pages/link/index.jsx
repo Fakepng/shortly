@@ -35,7 +35,7 @@ function Link({ session }) {
 	const nameRef = useRef(null);
 	const urlRef = useRef("");
 	const router = useRouter();
-	// const deferredSearch = useDeferredValue(search);
+	const deferredSearch = useDeferredValue(search);
 
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
@@ -183,41 +183,43 @@ function Link({ session }) {
 	}, []);
 
 	useEffect(() => {
-		// if (search === "") {
-		setFilteredUrls(urls);
-		// } else {
-		// 	setFilteredUrls(
-		// 		urls.filter((url) => {
-		// 			!url.name.toLowerCase().includes(search.toLowerCase()) ||
-		// 				url.code.toLowerCase().includes(search.toLowerCase()) ||
-		// 				url.url.toLowerCase().includes(search.toLowerCase()) ||
-		// 				url.code
-		// 					.match(/.{1,4}/g)
-		// 					.join("-")
-		// 					.toLowerCase()
-		// 					.includes(search.toLowerCase());
-		// 		})
-		// 	);
-		// }
-	}, [urls, search]);
+		if (deferredSearch === "") {
+			setFilteredUrls(urls);
+		} else {
+			const filtered = urls.filter((url) => {
+				return (
+					url.name.toLowerCase().includes(deferredSearch.toLowerCase()) ||
+					url.code.toLowerCase().includes(deferredSearch.toLowerCase()) ||
+					url.url.toLowerCase().includes(deferredSearch.toLowerCase()) ||
+					url.code
+						.match(/.{1,4}/g)
+						.join("-")
+						.toLowerCase()
+						.includes(deferredSearch.toLowerCase())
+				);
+			});
+
+			setFilteredUrls(filtered);
+		}
+	}, [urls, deferredSearch]);
 
 	return (
 		<div className='flex flex-col h-screen'>
 			<Header />
 			<div className='flex flex-grow bg-slate-900'>
-				{/* <div className='absolute top-3 right-16 mt-20 cursor-pointer'>
+				<div className='absolute top-3 right-16 mt-20 cursor-pointer md: bottom-0'>
 					<input
 						className='flex ml-2 items-center bg-transparent outline-none text-gray-300 placeholder-gray-400 flex-shrink text-right'
 						type='text'
 						onChange={(event) => setSearch(event.target.value)}
 						placeholder='Search'
 					/>
-				</div> */}
+				</div>
 				<Icon
 					path={mdiPlusCircle}
 					size={2}
 					color='white'
-					className='absolute top-0 right-0 mt-20 cursor-pointer'
+					className='absolute top-0 right-0 mt-20 cursor-pointer md:bottom-0'
 					onClick={handleShow}
 				/>
 				<Container>{urlsMap}</Container>
