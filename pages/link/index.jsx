@@ -1,4 +1,5 @@
 import { getSession } from "next-auth/react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState, useRef, useDeferredValue } from "react";
 import axios from "axios";
@@ -30,7 +31,7 @@ function Link({ session }) {
 	const [urls, setUrls] = useState([]);
 	const [filteredUrls, setFilteredUrls] = useState([]);
 	const [show, setShow] = useState(false);
-	const [img, setImg] = useState(undefined);
+	const [img, setImg] = useState({});
 	const [search, setSearch] = useState("");
 	const nameRef = useRef(null);
 	const urlRef = useRef("");
@@ -40,12 +41,20 @@ function Link({ session }) {
 	const handleClose = () => setShow(false);
 	const handleShow = () => setShow(true);
 
-	const generateQR = async (text) => {
+	const generateQR = async (text, code) => {
 		try {
-			setImg(await QRCode.toDataURL(text));
+			const qr = await QRCode.toDataURL(text);
+			setImg((other) => ({ ...other, [code]: qr }));
 		} catch (err) {
 			console.error(err);
 		}
+	};
+
+	const resetVisited = async (code) => {
+		await axios.post("/api/resetVisited", { code });
+		setUrls(
+			urls.map((url) => (url.code === code ? { ...url, visited: 0 } : url))
+		);
 	};
 
 	const deleteUrl = async (code) => {
@@ -62,14 +71,12 @@ function Link({ session }) {
 						{url.visited} times
 					</Accordion.Header>
 					<Accordion.Body>
-						{url.url}
-						<br />
 						<div>
 							<Button
-								variant='primary'
+								variant='success'
 								type='submit'
 								size='sm'
-								className='bg-blue-300'
+								className='bg-green-200'
 								onClick={() => {
 									navigator.clipboard.writeText(
 										`https://shotly.fakepng.com/go/${url.code
@@ -129,11 +136,21 @@ function Link({ session }) {
 									generateQR(
 										`https://shotly.fakepng.com/go/${url.code
 											.match(/.{1,4}/g)
-											.join("-")}`
+											.join("-")}`,
+										url.code
 									);
 								}}
 							>
 								QR
+							</Button>{" "}
+							<Button
+								variant='warning'
+								type='submit'
+								size='sm'
+								className='bg-yellow-100'
+								onClick={() => resetVisited(url.code)}
+							>
+								RESET VISITED
 							</Button>{" "}
 							<Button
 								variant='danger'
@@ -145,7 +162,9 @@ function Link({ session }) {
 								DELETE
 							</Button>
 						</div>
-						{img && <img src={img} />}
+						{img[url.code] && <img src={img[url.code]} />}
+						<br />
+						{url.url}
 					</Accordion.Body>
 				</Accordion.Item>
 			</Accordion>
@@ -205,8 +224,16 @@ function Link({ session }) {
 
 	return (
 		<div className='flex flex-col h-screen'>
-			<Header />
-			<div className='flex flex-grow bg-slate-900'>
+			<Head>
+				<title>Link</title>
+				<meta name='description' content='URL Shortener' />
+				<link rel='icon' href='/favicon.ico' />
+			</Head>
+			<header>
+				<Header />
+			</header>
+
+			<main className='flex flex-grow bg-slate-900'>
 				<div className='absolute top-3 right-16 mt-20 cursor-pointer md: bottom-0'>
 					<input
 						className='flex ml-2 items-center bg-transparent outline-none text-gray-300 placeholder-gray-400 flex-shrink text-right'
@@ -223,7 +250,7 @@ function Link({ session }) {
 					onClick={handleShow}
 				/>
 				<Container>{urlsMap}</Container>
-			</div>
+			</main>
 			<Modal show={show} onHide={handleClose}>
 				<Modal.Header closeButton>
 					<Modal.Title>New URL</Modal.Title>
