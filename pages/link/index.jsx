@@ -260,7 +260,9 @@ function Link({ session }) {
           className="absolute top-1 right-0 mt-20 cursor-pointer md:bottom-0"
           onClick={handleShow}
         />
-        {urls ? (
+        {urls?.length !== 0 ? (
+          <Container>{urlsMap}</Container>
+        ) : (
           <Container>
             <Alert
               variant="success"
@@ -270,8 +272,6 @@ function Link({ session }) {
               <Alert.Heading>Create new link here. Click me</Alert.Heading>
             </Alert>
           </Container>
-        ) : (
-          <Container>{urlsMap}</Container>
         )}
       </main>
       <Modal show={show} onHide={handleClose}>
