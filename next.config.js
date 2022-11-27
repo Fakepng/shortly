@@ -4,11 +4,12 @@ const nextConfig = {
   swcMinify: true,
   images: {
     domains: [
-      'platform-lookaside.fbsbx.com',
-      'avatars.githubusercontent.com',
-      'cdn.discordapp.com',
+      "platform-lookaside.fbsbx.com",
+      "avatars.githubusercontent.com",
+      "cdn.discordapp.com",
+      "lh3.googleusercontent.com",
     ],
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
