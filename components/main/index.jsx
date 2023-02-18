@@ -15,16 +15,13 @@ function Main() {
     event.preventDefault();
     if (!inputRef.current.value) return;
 
-    const id = inputRef.current.value
-      .split("/")
-      .slice(-1)
-      .join("")
-      .split("-")
-      .join("")
-      .match(/.{1,4}/g)
-      .join("-");
+    const input = inputRef.current.value;
+    const regexed = input.match(/([a-z\d]{4}-?[a-z\d]{4}-?[a-z\d]{4})/);
 
-    router.push(`/go/${id}`);
+    if (regexed) {
+      const id = regexed[0].replace(/-/g, "").match(/.{4}/g).join("-");
+      router.push(`/go/${id}`);
+    }
 
     inputRef.current.value = "";
   };
@@ -41,7 +38,6 @@ function Main() {
             type="text"
             ref={inputRef}
             placeholder="abcd-efgh-ijkl"
-            autoFocus
           />
           <button hidden type="submit" onClick={getId}>
             Submit
